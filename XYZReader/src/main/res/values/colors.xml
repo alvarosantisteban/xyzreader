@@ -18,8 +18,13 @@
 <resources>
     <color name="photo_placeholder">#ccc</color>
 
-    <color name="theme_primary">#04561A</color>
-    <color name="theme_primary_dark">#04561A</color>
-    <color name="theme_accent">#04561A</color>
+    <!-- Cyan 500 -->
+    <color name="theme_primary">#00BCD4</color>
+    <!-- Cyan 700 -->
+    <color name="theme_primary_dark">#0097A7</color>
+    <!-- Cyan 300 -->
+    <color name="theme_primary_light">#4DD0E1</color>
+    <!-- Orange A200 -->
+    <color name="theme_accent">#FFAB40</color>
     <color name="ltgray">#ffe0e0e0</color>
 </resources>

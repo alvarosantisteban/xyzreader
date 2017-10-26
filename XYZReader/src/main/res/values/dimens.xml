@@ -10,4 +10,7 @@
 
     <dimen name="app_bar_elevation">4dp</dimen>
 
+    <dimen name="padding_bottom">16dp</dimen>
+    <dimen name="padding_top">72dp</dimen>
+
 </resources>

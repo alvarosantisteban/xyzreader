@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -31,7 +33,7 @@ import com.example.xyzreader.data.ItemsContract;
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
 public class ArticleDetailActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, ArticleDetailFragment.OnLoadingTextFinished {
 
     private Cursor mCursor;
     private long mStartId;
@@ -44,6 +46,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     private AppBarLayout appBarLayout;
     private View mUpButton;
     private String bookTitle;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class ArticleDetailActivity extends AppCompatActivity
                             View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
         setContentView(R.layout.activity_article_detail);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -170,6 +174,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        progressBar.setVisibility(View.VISIBLE);
         return ArticleLoader.newAllArticlesInstance(this);
     }
 
@@ -198,6 +203,17 @@ public class ArticleDetailActivity extends AppCompatActivity
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mCursor = null;
         mPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoadingTextFinished(boolean isLoaded) {
+        progressBar.setVisibility(View.GONE);
+
+        if(!isLoaded) {
+            Snackbar.make(findViewById(R.id.coordinator_layout), R.string.error_book_info_not_displayed,
+                    Snackbar.LENGTH_LONG)
+                    .show();
+        }
     }
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {

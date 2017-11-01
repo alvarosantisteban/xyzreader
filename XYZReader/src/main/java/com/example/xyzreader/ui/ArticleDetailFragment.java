@@ -3,6 +3,7 @@ package com.example.xyzreader.ui;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -39,6 +40,11 @@ import java.util.GregorianCalendar;
  */
 public class ArticleDetailFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
+
+    interface OnLoadingTextFinished {
+        void onLoadingTextFinished(boolean isLoaded);
+    }
+
     private static final String TAG = "ArticleDetailFragment";
 
     public static final String ARG_ITEM_ID = "item_id";
@@ -55,6 +61,7 @@ public class ArticleDetailFragment extends Fragment implements
     private int mScrollY;
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
+    OnLoadingTextFinished onLoadingTextFinished;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -89,6 +96,20 @@ public class ArticleDetailFragment extends Fragment implements
         mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(
                 R.dimen.detail_card_top_margin);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            onLoadingTextFinished = (OnLoadingTextFinished) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnLoadingTextFinished");
+        }
     }
 
     public ArticleDetailActivity getActivityCast() {
@@ -196,7 +217,7 @@ public class ArticleDetailFragment extends Fragment implements
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
 
 
-        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
+        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf")); // TODO Check if this font is a good idea
 
         if (mCursor != null) {
             mRootView.setAlpha(0);
@@ -257,10 +278,13 @@ public class ArticleDetailFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        boolean isLoadSuccessful = true;
+
         if (!isAdded()) {
             if (cursor != null) {
                 cursor.close();
             }
+            onLoadingTextFinished.onLoadingTextFinished(false);
             return;
         }
 
@@ -269,8 +293,11 @@ public class ArticleDetailFragment extends Fragment implements
             Log.e(TAG, "Error reading item detail cursor");
             mCursor.close();
             mCursor = null;
+
+            isLoadSuccessful = false;
         }
 
+        onLoadingTextFinished.onLoadingTextFinished(isLoadSuccessful);
         bindViews();
     }
 

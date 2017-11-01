@@ -11,6 +11,5 @@
     <string name="up">Up</string>
 
     <string name="error_book_info_not_displayed">The book could not be displayed</string>
-    <string name="transition_photo">transition book cover</string>
 
 </resources>

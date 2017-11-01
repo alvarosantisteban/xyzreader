@@ -6,7 +6,8 @@
 
     <dimen name="fab_elevation">6dp</dimen>
     <dimen name="fab_press_translation_z">12dp</dimen>
-    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_height_width">56dp</dimen>
 
     <dimen name="extended_app_bar_height">168dp</dimen>
     <dimen name="app_bar_elevation">4dp</dimen>

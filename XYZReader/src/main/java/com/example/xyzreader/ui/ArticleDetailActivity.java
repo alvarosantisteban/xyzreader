@@ -3,6 +3,7 @@ package com.example.xyzreader.ui;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -214,6 +216,13 @@ public class ArticleDetailActivity extends AppCompatActivity
                     Snackbar.LENGTH_LONG)
                     .show();
         }
+    }
+
+    public void shareBook(View view) {
+        startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(this)
+                .setType("text/plain")
+                .setText(getString(R.string.share_text_tag, bookTitle))
+                .getIntent(), getString(R.string.action_share)));
     }
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {

@@ -110,10 +110,6 @@ public class ArticleDetailFragment extends Fragment implements
         }
     }
 
-    public ArticleDetailActivity getActivityCast() {
-        return (ArticleDetailActivity) getActivity();
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -205,7 +201,7 @@ public class ArticleDetailFragment extends Fragment implements
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
 
 
-        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf")); // TODO Check if this font is a good idea
+        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
             mRootView.setAlpha(0);
@@ -238,11 +234,17 @@ public class ArticleDetailFragment extends Fragment implements
                         public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
                             Bitmap bitmap = imageContainer.getBitmap();
                             if (bitmap != null) {
-                                Palette p = Palette.generate(bitmap, 12);
-                                mMutedColor = p.getDarkMutedColor(0xFF333333);
-                                mRootView.findViewById(R.id.meta_bar)
-                                        .setBackgroundColor(mMutedColor);
-                                updateStatusBar();
+                                Palette.from(bitmap).maximumColorCount(12).generate(new Palette.PaletteAsyncListener() {
+                                    public void onGenerated(Palette p) {
+                                        // Use generated instance
+                                        mMutedColor = p.getDarkMutedColor(0xFF333333);
+                                        mRootView.findViewById(R.id.meta_bar)
+                                                .setBackgroundColor(mMutedColor);
+
+                                        // Once we have the new muted color, update status bar
+                                        updateStatusBar();
+                                    }
+                                });
                             }
                         }
 
